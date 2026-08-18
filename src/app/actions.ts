@@ -1,11 +1,11 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth0 } from "@/lib/auth0";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { isContestOpen, REQUIRE_LOGO } from "@/lib/contest-config";
+import { isContestOpen, REQUIRE_LOGO, MAX_SUBMISSIONS_PER_PERSON } from "@/lib/contest-config";
 
 export type SubmitResult =
-  | { ok: true; referenceCode: string }
+  | { ok: true; referenceCode: string; remaining: number }
   | { ok: false; error: string };
 
 function makeReferenceCode() {
@@ -23,7 +23,8 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
     return { ok: false, error: "The contest is now closed. Thank you to everyone who participated." };
   }
 
-  const { userId } = await auth();
+  const session = await auth0.getSession();
+  const userId = session?.user?.sub;
   if (!userId) {
     return { ok: false, error: "Please sign in to submit your idea." };
   }
@@ -57,13 +58,15 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
     }
   }
 
-  const { data: existing } = await supabaseAdmin
+  const { count: existingCount } = await supabaseAdmin
     .from("submissions")
-    .select("reference_code")
-    .eq("clerk_user_id", userId)
-    .maybeSingle();
-  if (existing) {
-    return { ok: false, error: "You've already submitted an entry. One submission per person." };
+    .select("id", { count: "exact", head: true })
+    .eq("auth_user_id", userId);
+  if ((existingCount ?? 0) >= MAX_SUBMISSIONS_PER_PERSON) {
+    return {
+      ok: false,
+      error: `You've already submitted ${MAX_SUBMISSIONS_PER_PERSON} entries — that's the max per person.`,
+    };
   }
 
   const referenceCode = makeReferenceCode();
@@ -82,7 +85,7 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
   const { data: submission, error: insertError } = await supabaseAdmin
     .from("submissions")
     .insert({
-      clerk_user_id: userId,
+      auth_user_id: userId,
       reference_code: referenceCode,
       brand_name: brandName,
       why_name: whyName,
@@ -110,5 +113,58 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
     return { ok: false, error: "Failed to save your submission. Please try again." };
   }
 
-  return { ok: true, referenceCode };
+  return { ok: true, referenceCode, remaining: MAX_SUBMISSIONS_PER_PERSON - (existingCount ?? 0) - 1 };
+}
+
+export type MyVotesResult = { signedIn: boolean; votes: Record<string, 1 | -1> };
+
+export async function getMyVotes(): Promise<MyVotesResult> {
+  const session = await auth0.getSession();
+  const userId = session?.user?.sub;
+  if (!userId) return { signedIn: false, votes: {} };
+
+  const { data } = await supabaseAdmin.from("votes").select("submission_id, value").eq("voter_user_id", userId);
+  const votes = Object.fromEntries((data ?? []).map((v) => [v.submission_id, v.value as 1 | -1]));
+  return { signedIn: true, votes };
+}
+
+export type VoteResult =
+  | { ok: true; myVote: 1 | -1 | 0; upvotes: number; downvotes: number }
+  | { ok: false; error: string };
+
+export async function castVote(submissionId: string, value: 1 | -1): Promise<VoteResult> {
+  const session = await auth0.getSession();
+  const userId = session?.user?.sub;
+  if (!userId) {
+    return { ok: false, error: "Please sign in to vote." };
+  }
+
+  const { data: existing } = await supabaseAdmin
+    .from("votes")
+    .select("value")
+    .eq("submission_id", submissionId)
+    .eq("voter_user_id", userId)
+    .maybeSingle();
+
+  let myVote: 1 | -1 | 0;
+  if (existing?.value === value) {
+    await supabaseAdmin.from("votes").delete().eq("submission_id", submissionId).eq("voter_user_id", userId);
+    myVote = 0;
+  } else {
+    await supabaseAdmin
+      .from("votes")
+      .upsert(
+        { submission_id: submissionId, voter_user_id: userId, value },
+        { onConflict: "submission_id,voter_user_id" }
+      );
+    myVote = value;
+  }
+
+  const { data: row } = await supabaseAdmin
+    .from("submissions")
+    .select("upvotes, downvotes")
+    .eq("id", submissionId)
+    .single();
+
+  return { ok: true, myVote, upvotes: row?.upvotes ?? 0, downvotes: row?.downvotes ?? 0 };
 }

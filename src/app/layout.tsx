@@ -1,6 +1,6 @@
-import { ClerkProvider, SignInButton, Show, UserButton } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fredoka } from "next/font/google";
+import { AuthNav } from "@/components/AuthNav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,29 +32,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${fredoka.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>
-          <header className="sticky top-0 z-50 border-b border-panel-border bg-background/80 backdrop-blur">
-            <div className="container-narrow flex items-center justify-between py-4">
-              <span className="font-display font-semibold tracking-tight text-lg">Brain Station 23</span>
-              <div className="flex items-center gap-4">
-                <a href="#submit" className="hidden sm:inline text-sm text-muted hover:text-white transition">
-                  Contest
-                </a>
-                <Show when="signed-out">
-                  <SignInButton mode="modal">
-                    <button className="rounded-full border border-panel-border px-4 py-2 text-sm font-medium hover:bg-white/5 transition">
-                      Sign in
-                    </button>
-                  </SignInButton>
-                </Show>
-                <Show when="signed-in">
-                  <UserButton />
-                </Show>
-              </div>
+        <header className="sticky top-0 z-50 border-b border-panel-border bg-background/80 backdrop-blur">
+          <div className="container-narrow flex items-center justify-between py-4">
+            <span className="font-display font-semibold tracking-tight text-lg">Brain Station 23</span>
+            <div className="flex items-center gap-4">
+              <a href="#submit" className="hidden sm:inline text-sm text-muted hover:text-white transition">
+                Contest
+              </a>
+              <AuthNav />
             </div>
-          </header>
-          <main className="flex-1">{children}</main>
-        </ClerkProvider>
+          </div>
+        </header>
+        <main className="flex-1">{children}</main>
       </body>
     </html>
   );

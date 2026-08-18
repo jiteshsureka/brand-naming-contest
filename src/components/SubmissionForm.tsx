@@ -15,7 +15,7 @@ export function SubmissionForm() {
   const [fileError, setFileError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
-  const [result, setResult] = useState<{ referenceCode: string } | null>(null);
+  const [result, setResult] = useState<{ referenceCode: string; remaining: number } | null>(null);
 
   function handleFile(file: File | null) {
     setFileError(null);
@@ -53,7 +53,7 @@ export function SubmissionForm() {
     const res = await submitEntry(formData);
     setPending(false);
     if (res.ok) {
-      setResult({ referenceCode: res.referenceCode });
+      setResult({ referenceCode: res.referenceCode, remaining: res.remaining });
     } else {
       setError(res.error);
     }
@@ -70,6 +70,25 @@ export function SubmissionForm() {
         <p className="mt-6 font-mono text-sm text-muted">
           Reference: <span className="text-white">{result.referenceCode}</span>
         </p>
+        {result.remaining > 0 && (
+          <>
+            <p className="mt-4 text-sm text-muted">
+              You can submit {result.remaining} more {result.remaining === 1 ? "entry" : "entries"}.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setResult(null);
+                setLogoFile(null);
+                setLogoPreview(null);
+                formRef.current?.reset();
+              }}
+              className="mt-4 rounded-full border border-panel-border px-6 py-2.5 text-sm font-medium hover:bg-white/5 transition"
+            >
+              Submit another idea
+            </button>
+          </>
+        )}
       </div>
     );
   }

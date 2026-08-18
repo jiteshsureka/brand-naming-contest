@@ -2,7 +2,7 @@
 export const CONTEST_START_ISO = "2026-08-18T00:00:00Z";
 export const CONTEST_DURATION_HOURS = 72;
 
-export const ONE_SUBMISSION_PER_PERSON = true;
+export const MAX_SUBMISSIONS_PER_PERSON = 2;
 export const REQUIRE_LOGO = true;
 
 export const CONTEST_START = new Date(CONTEST_START_ISO);

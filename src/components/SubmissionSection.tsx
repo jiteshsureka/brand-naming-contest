@@ -1,11 +1,12 @@
-import { SignInButton, Show } from "@clerk/nextjs";
+import { auth0 } from "@/lib/auth0";
 import { SubmissionForm } from "./SubmissionForm";
 import { LiveFeed } from "./LiveFeed";
 import { Countdown } from "./Countdown";
 import { isContestOpen } from "@/lib/contest-config";
 
-export function SubmissionSection() {
+export async function SubmissionSection() {
   const open = isContestOpen();
+  const session = await auth0.getSession();
 
   return (
     <section id="submit" className="section">
@@ -23,24 +24,20 @@ export function SubmissionSection() {
               The contest is now closed. Thank you to everyone who participated.
             </p>
           </div>
+        ) : !session ? (
+          <div className="panel p-10 text-center max-w-xl mx-auto">
+            <p className="text-muted mb-6">Sign in to submit your name and logo idea.</p>
+            <a
+              href="/auth/login"
+              className="inline-block rounded-full bg-accent px-6 py-3 font-medium text-white transition hover:brightness-110"
+            >
+              Sign in to submit
+            </a>
+          </div>
         ) : (
-          <>
-            <Show when="signed-out">
-              <div className="panel p-10 text-center max-w-xl mx-auto">
-                <p className="text-muted mb-6">Sign in to submit your name and logo idea.</p>
-                <SignInButton mode="modal">
-                  <button className="rounded-full bg-accent px-6 py-3 font-medium text-white transition hover:brightness-110">
-                    Sign in to submit
-                  </button>
-                </SignInButton>
-              </div>
-            </Show>
-            <Show when="signed-in">
-              <div className="max-w-2xl mx-auto">
-                <SubmissionForm />
-              </div>
-            </Show>
-          </>
+          <div className="max-w-2xl mx-auto">
+            <SubmissionForm />
+          </div>
         )}
 
         <div className="mt-16">
