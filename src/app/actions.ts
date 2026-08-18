@@ -71,7 +71,9 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
 
   const referenceCode = makeReferenceCode();
   const ext = logo!.name.split(".").pop() || "png";
-  const path = `${userId}/${referenceCode}.${ext}`;
+  // Auth0 ids like "google-oauth2|123" contain '|', which Storage object keys reject.
+  const safeUserId = userId.replace(/[^a-zA-Z0-9_-]/g, "_");
+  const path = `${safeUserId}/${referenceCode}.${ext}`;
 
   const { error: uploadError } = await supabaseAdmin.storage
     .from("logos")
