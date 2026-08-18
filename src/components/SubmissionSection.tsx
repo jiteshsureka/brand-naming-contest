@@ -11,7 +11,7 @@ export function SubmissionSection() {
     <section id="submit" className="section">
       <div className="container-narrow">
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-semibold">What Would You Call Us?</h2>
+          <h2 className="text-3xl sm:text-4xl">Toss Us Your Idea 🎉</h2>
           <div className="mt-6 flex justify-center">
             <Countdown size="sm" />
           </div>

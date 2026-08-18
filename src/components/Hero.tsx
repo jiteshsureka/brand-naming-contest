@@ -1,5 +1,6 @@
 import { NetworkVisual } from "./NetworkVisual";
 import { Countdown } from "./Countdown";
+import { PrizeTicket } from "./PrizeTicket";
 
 export function Hero() {
   return (
@@ -11,12 +12,14 @@ export function Hero() {
             "radial-gradient(60% 50% at 50% 0%, var(--accent-soft), transparent 70%)",
         }}
       />
+      <div className="blob w-72 h-72 bg-pop-blue -top-10 -left-16" />
+      <div className="blob w-64 h-64 bg-pop-yellow top-40 right-0" />
       <div className="container-narrow grid gap-12 lg:grid-cols-2 items-center">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-accent font-medium mb-5">
             A new chapter, unnamed
           </p>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.05] text-balance">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl leading-[1.05] text-balance">
             We&rsquo;re Building Our{" "}
             <span className="text-gradient">Next Identity.</span>
           </h1>
@@ -43,7 +46,10 @@ export function Hero() {
               See What We&rsquo;re Looking For
             </a>
           </div>
-          <div className="mt-12">
+          <div className="mt-10">
+            <PrizeTicket compact />
+          </div>
+          <div className="mt-10">
             <Countdown />
           </div>
         </div>

@@ -6,10 +6,6 @@ import { SubmissionSection } from "@/components/SubmissionSection";
 import { Prize } from "@/components/Prize";
 import { Criteria } from "@/components/Criteria";
 import { KeepInMind } from "@/components/KeepInMind";
-import { BrandEvolution } from "@/components/BrandEvolution";
-import { HowItWorks } from "@/components/HowItWorks";
-import { Faq } from "@/components/Faq";
-import { Terms } from "@/components/Terms";
 import { Footer } from "@/components/Footer";
 
 export default function Home() {
@@ -23,10 +19,6 @@ export default function Home() {
       <Prize />
       <Criteria />
       <KeepInMind />
-      <BrandEvolution />
-      <HowItWorks />
-      <Faq />
-      <Terms />
       <Footer />
     </>
   );
