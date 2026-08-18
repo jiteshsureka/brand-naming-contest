@@ -39,6 +39,10 @@ body {
   color: white;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 h1, h2, h3 {
   font-family: var(--font-display);
   font-weight: 600;

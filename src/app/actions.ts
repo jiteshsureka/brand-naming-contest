@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { isContestOpen, REQUIRE_LOGO } from "@/lib/contest-config";
 
@@ -67,7 +67,6 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
   }
 
   const referenceCode = makeReferenceCode();
-  const user = await currentUser();
   const ext = logo!.name.split(".").pop() || "png";
   const path = `${userId}/${referenceCode}.${ext}`;
 
@@ -103,7 +102,7 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
 
   const { error: contactError } = await supabaseAdmin.from("submission_contacts").insert({
     submission_id: submission.id,
-    full_name: fullName || user?.fullName || "",
+    full_name: fullName,
     email,
     phone,
   });
