@@ -15,10 +15,10 @@ export default function Home() {
       <Evolution />
       <Capabilities />
       <NameKeywords />
+      <KeepInMind />
+      <Criteria />
       <SubmissionSection />
       <Prize />
-      <Criteria />
-      <KeepInMind />
       <Footer />
     </>
   );
