@@ -168,8 +168,11 @@ export function SubmissionForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-accent px-6 py-3.5 font-medium text-white transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-full bg-accent px-6 py-3.5 font-medium text-white transition hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
+        {pending && (
+          <span className="h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+        )}
         {pending ? "Submitting…" : "Submit My Idea →"}
       </button>
     </form>
