@@ -77,6 +77,7 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
     .from("logos")
     .upload(path, logo!, { contentType: logo!.type, upsert: false });
   if (uploadError) {
+    console.error("logo upload failed:", uploadError);
     return { ok: false, error: "Failed to upload logo. Please try again." };
   }
 
@@ -99,6 +100,7 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
     .single();
 
   if (insertError || !submission) {
+    console.error("submission insert failed:", insertError);
     await supabaseAdmin.storage.from("logos").remove([path]);
     return { ok: false, error: "Failed to save your submission. Please try again." };
   }
@@ -110,6 +112,7 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
     phone,
   });
   if (contactError) {
+    console.error("contact insert failed:", contactError);
     return { ok: false, error: "Failed to save your submission. Please try again." };
   }
 
