@@ -150,19 +150,21 @@ function EntryCard({
   return (
     <div
       onClick={onOpen}
-      className="panel p-4 flex gap-3 items-center cursor-pointer hover:-translate-y-1 hover:border-accent/40"
+      className="panel p-4 cursor-pointer hover:-translate-y-1 hover:border-accent/40"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={entry.logo_url}
         alt={`${entry.brand_name} logo`}
-        className="h-12 w-12 rounded-lg object-contain bg-white/5 shrink-0 p-1"
+        className="h-44 w-full rounded-xl object-contain bg-white/5 p-4"
       />
-      <div className="min-w-0 flex-1">
-        <p className="font-medium truncate">{entry.brand_name}</p>
-        {entry.tagline && <p className="text-xs text-muted truncate">{entry.tagline}</p>}
+      <div className="mt-3 flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium truncate">{entry.brand_name}</p>
+          {entry.tagline && <p className="text-xs text-muted truncate">{entry.tagline}</p>}
+        </div>
+        <VoteButtons entry={entry} myVote={myVote} signedIn={signedIn} onVote={onVote} />
       </div>
-      <VoteButtons entry={entry} myVote={myVote} signedIn={signedIn} onVote={onVote} />
     </div>
   );
 }
@@ -193,7 +195,7 @@ function EntryModal({
           <img
             src={entry.logo_url}
             alt={`${entry.brand_name} logo`}
-            className="h-28 w-28 rounded-2xl object-contain bg-white/5 p-3"
+            className="h-64 w-full max-w-xs rounded-2xl object-contain bg-white/5 p-5"
           />
           <h3 className="mt-4 text-2xl font-display font-semibold">{entry.brand_name}</h3>
           {entry.tagline && <p className="mt-1 text-muted">{entry.tagline}</p>}
