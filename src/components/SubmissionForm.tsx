@@ -5,7 +5,7 @@ import { submitEntry } from "@/app/actions";
 import { isContestOpen } from "@/lib/contest-config";
 
 const ACCEPTED = ".png,.jpg,.jpeg,.svg,.pdf";
-const MAX_SIZE = 10 * 1024 * 1024;
+const MAX_SIZE = 4 * 1024 * 1024;
 
 export function SubmissionForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -25,7 +25,7 @@ export function SubmissionForm() {
       return;
     }
     if (file.size > MAX_SIZE) {
-      setFileError("File must be under 10MB.");
+      setFileError("File must be under 4MB.");
       return;
     }
     setLogoFile(file);
@@ -143,7 +143,7 @@ export function SubmissionForm() {
           ) : (
             <p className="text-sm text-muted">
               Drag and drop your logo, or click to browse<br />
-              <span className="text-xs">PNG, JPG, SVG or PDF · up to 10MB</span>
+              <span className="text-xs">PNG, JPG, SVG or PDF · up to 4MB</span>
             </p>
           )}
         </div>

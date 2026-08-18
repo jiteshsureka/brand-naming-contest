@@ -16,7 +16,7 @@ function makeReferenceCode() {
 }
 
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/svg+xml", "application/pdf"];
-const MAX_SIZE = 10 * 1024 * 1024;
+const MAX_SIZE = 4 * 1024 * 1024;
 
 export async function submitEntry(formData: FormData): Promise<SubmitResult> {
   if (!isContestOpen()) {
@@ -54,7 +54,7 @@ export async function submitEntry(formData: FormData): Promise<SubmitResult> {
       return { ok: false, error: "Logo must be PNG, JPG, SVG or PDF." };
     }
     if (logo.size > MAX_SIZE) {
-      return { ok: false, error: "Logo must be under 10MB." };
+      return { ok: false, error: "Logo must be under 4MB." };
     }
   }
 
