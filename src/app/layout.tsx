@@ -39,6 +39,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <a href="#submit" className="hidden sm:inline text-sm text-muted hover:text-white transition">
                 Contest
               </a>
+              <a href="#live-submissions" className="hidden sm:inline text-sm text-muted hover:text-white transition">
+                Live Submissions
+              </a>
               <AuthNav />
             </div>
           </div>

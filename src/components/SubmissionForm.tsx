@@ -9,6 +9,7 @@ const MAX_SIZE = 4 * 1024 * 1024;
 
 export function SubmissionForm() {
   const formRef = useRef<HTMLFormElement>(null);
+  const submittingRef = useRef(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -43,19 +44,28 @@ export function SubmissionForm() {
   }
 
   async function onSubmit(formData: FormData) {
+    // ponytail: React's `disabled` state lags a render behind a fast double-click;
+    // this ref flips synchronously so the second click is dropped immediately.
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setError(null);
     if (!isContestOpen()) {
       setError("The contest is now closed. Thank you to everyone who participated.");
+      submittingRef.current = false;
       return;
     }
     if (logoFile) formData.set("logo", logoFile);
     setPending(true);
-    const res = await submitEntry(formData);
-    setPending(false);
-    if (res.ok) {
-      setResult({ referenceCode: res.referenceCode, remaining: res.remaining });
-    } else {
-      setError(res.error);
+    try {
+      const res = await submitEntry(formData);
+      if (res.ok) {
+        setResult({ referenceCode: res.referenceCode, remaining: res.remaining });
+      } else {
+        setError(res.error);
+      }
+    } finally {
+      setPending(false);
+      submittingRef.current = false;
     }
   }
 

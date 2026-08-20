@@ -40,7 +40,7 @@ export async function SubmissionSection() {
           </div>
         )}
 
-        <div className="mt-16">
+        <div id="live-submissions" className="mt-16 scroll-mt-24">
           <h3 className="text-center text-sm uppercase tracking-[0.2em] text-muted mb-6">
             Live Submissions
           </h3>
