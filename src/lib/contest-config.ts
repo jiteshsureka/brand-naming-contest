@@ -1,6 +1,6 @@
 // Single source of truth for contest timing/rules. Edit these two lines to reconfigure.
 export const CONTEST_START_ISO = "2026-08-18T20:30:00Z";
-export const CONTEST_DURATION_HOURS = 72;
+export const CONTEST_DURATION_HOURS = 144;
 
 export const MAX_SUBMISSIONS_PER_PERSON = 2;
 export const REQUIRE_LOGO = true;
